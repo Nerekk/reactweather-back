@@ -1,6 +1,7 @@
 package org.example.reactweatherback.Config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.reactweatherback.Paths.Paths;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -27,7 +28,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**",
+    private static final String[] WHITE_LIST_URL = {Paths.PATH + "**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -61,7 +62,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
-                        logout.logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl(Paths.AUTH + "logout")
                                 .addLogoutHandler(logoutHandler)
                                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 )
