@@ -6,6 +6,7 @@ import org.example.reactweatherback.ApiServices.AdminService;
 import org.example.reactweatherback.ApiDtos.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(Paths.ADMIN)
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final AdminService adminService;
@@ -46,7 +46,6 @@ public class AdminController {
     }
 
     @GetMapping(path = "users")
-    @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<List<UserResponse>> getAllUsersInfo() {
         return ResponseEntity.ok(adminService.getAllUsers());
     }

@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static org.example.reactweatherback.User.Permission.*;
 import static org.example.reactweatherback.User.Role.ADMIN;
+import static org.example.reactweatherback.User.Role.USER;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -28,7 +29,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {Paths.PATH + "**",
+    private static final String[] WHITE_LIST_URL = {Paths.AUTH + "**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -50,11 +51,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name())
-                                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name())
-                                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name())
-                                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name())
-                                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name())
+                                .requestMatchers(Paths.ADMIN + "**").hasAnyRole(ADMIN.name())
+                                .requestMatchers(Paths.USER + "**").hasAnyRole(ADMIN.name(), USER.name())
+//                                .requestMatchers(GET, Paths.ADMIN + "**").hasAnyAuthority(ADMIN_READ.name())
+//                                .requestMatchers(POST, Paths.ADMIN + "**").hasAnyAuthority(ADMIN_CREATE.name())
+//                                .requestMatchers(PUT, Paths.ADMIN + "**").hasAnyAuthority(ADMIN_UPDATE.name())
+//                                .requestMatchers(DELETE, Paths.ADMIN + "**").hasAnyAuthority(ADMIN_DELETE.name())
                                 .anyRequest()
                                 .authenticated()
                 )
