@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.reactweatherback.ApiServices.UserService;
 import org.example.reactweatherback.Config.JwtService;
+import org.example.reactweatherback.User.Role;
 import org.example.reactweatherback.token.Token;
 import org.example.reactweatherback.token.TokenRepository;
 import org.example.reactweatherback.token.TokenType;
@@ -17,11 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
   private final UserRepository repository;
+  private final UserService userService;
   private final TokenRepository tokenRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
@@ -31,7 +36,7 @@ public class AuthenticationService {
     var user = User.builder()
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
-        .role(request.getRole())
+        .role(Role.USER).locations(new ArrayList<>())
         .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
@@ -40,6 +45,7 @@ public class AuthenticationService {
     return AuthenticationResponse.builder()
         .accessToken(jwtToken)
             .refreshToken(refreshToken)
+            .role(user.getRole()).locations(userService.getLocations(user.getId()))
         .build();
   }
 
@@ -59,6 +65,7 @@ public class AuthenticationService {
     return AuthenticationResponse.builder()
         .accessToken(jwtToken)
             .refreshToken(refreshToken)
+            .role(user.getRole()).locations(userService.getLocations(user.getId()))
         .build();
   }
 
@@ -110,5 +117,18 @@ public class AuthenticationService {
         new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
       }
     }
+  }
+
+  public Optional<User> findUserByToken(String token) {
+    String email;
+    User user;
+
+    email = jwtService.extractUsername(token);
+    if (email == null) return Optional.empty();
+
+    user = repository.findByEmail(email).orElse(null);
+    if (user == null || !jwtService.isTokenValid(token, user)) return Optional.empty();
+
+    return Optional.of(user);
   }
 }
