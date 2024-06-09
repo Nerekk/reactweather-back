@@ -12,6 +12,5 @@ import java.util.List;
 @Getter
 @Setter
 public class LocationRequest {
-    private Integer id;
     private List<LocationDTO> locations;
 }
