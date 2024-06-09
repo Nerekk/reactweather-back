@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.reactweatherback.ApiDtos.LocationDTO;
+import org.example.reactweatherback.User.Role;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -16,4 +20,6 @@ public class AuthenticationResponse {
   private String accessToken;
   @JsonProperty("refresh_token")
   private String refreshToken;
+  private Role role;
+  private List<LocationDTO> locations;
 }

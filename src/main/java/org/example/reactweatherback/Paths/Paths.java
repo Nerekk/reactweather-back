@@ -6,5 +6,5 @@ public class Paths {
     public static final String AUTH = PATH + "auth/";
     public static final String USER = PATH + "user/";
     public static final String ADMIN = PATH + "admin/";
-    public static final String WEATHER = PATH + "weather/";
+    public static final String WEATHER = USER + "weather/";
 }

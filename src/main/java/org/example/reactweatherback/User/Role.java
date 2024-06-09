@@ -14,7 +14,15 @@ import static org.example.reactweatherback.User.Permission.*;
 @RequiredArgsConstructor
 public enum Role {
 
-  USER(Collections.emptySet()),
+  USER(
+          Set.of(
+                  USER_READ,
+                  USER_UPDATE,
+                  USER_DELETE,
+                  USER_CREATE
+          )
+  ),
+
   ADMIN(
           Set.of(
                   ADMIN_READ,

@@ -1,6 +1,7 @@
 package org.example.reactweatherback.ApiServices;
 
 import lombok.RequiredArgsConstructor;
+import org.example.reactweatherback.ApiDtos.UserResponse;
 import org.example.reactweatherback.ApiEntities.User;
 import org.example.reactweatherback.ApiRepos.UserRepository;
 import org.example.reactweatherback.ApiEntities.Location;
@@ -46,10 +47,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public ResponseEntity<String> updateLocations(LocationRequest locationRequest) {
-        locationRepository.deleteAllForUserId(locationRequest.getId());
-        User user = userRepository.findById(locationRequest.getId()).orElse(null);
-        if (user == null) return new ResponseEntity<>("User does not exist", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> updateLocations(LocationRequest locationRequest, User user) {
+        locationRepository.deleteAllForUserId(user.getId());
 
         List<LocationDTO> dtos = locationRequest.getLocations();
         for (LocationDTO dto : dtos) {
@@ -77,5 +76,9 @@ public class UserService {
                 location.getLat()))));
 
         return dtos;
+    }
+
+    public UserResponse getUserInfo(User user) {
+        return new UserResponse(user.getId(), user.getEmail(), user.getPassword(), user.getRole(), getLocations(user.getId()));
     }
 }

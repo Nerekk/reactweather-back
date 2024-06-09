@@ -6,18 +6,12 @@ import org.example.reactweatherback.ApiServices.AdminService;
 import org.example.reactweatherback.ApiDtos.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(Paths.ADMIN)
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final AdminService adminService;
@@ -45,9 +39,20 @@ public class AdminController {
         return "DELETE:: admin controller";
     }
 
-    @GetMapping(path = "users")
-    @PreAuthorize("hasAuthority('admin:read')")
+    @GetMapping(path = "users/all")
     public ResponseEntity<List<UserResponse>> getAllUsersInfo() {
         return ResponseEntity.ok(adminService.getAllUsers());
+    }
+
+    @DeleteMapping(path = "users/delete/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable("id") Integer id) {
+        adminService.deleteUserById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(path = "users/role/{id}")
+    public ResponseEntity<?> swapRoleById(@PathVariable("id") Integer id) {
+        adminService.swapRoleById(id);
+        return ResponseEntity.ok().build();
     }
 }

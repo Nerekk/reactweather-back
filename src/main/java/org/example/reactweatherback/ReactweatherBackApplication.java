@@ -26,8 +26,7 @@ public class ReactweatherBackApplication {
         return args -> {
             var admin = RegisterRequest.builder()
                     .email("admin@mail.com")
-                    .password("password")
-                    .role(ADMIN)
+                    .password("admin")
                     .build();
             System.out.println("Admin token: " + service.register(admin).getAccessToken());
         };
